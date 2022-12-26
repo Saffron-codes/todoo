@@ -1,5 +1,5 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+
 
 class Todo {
   String id;
@@ -53,23 +53,22 @@ class Todo {
   String toString() {
     return 'Todo(id: $id, content: $content, isCompleted: $isCompleted, createdAt: $createdAt)';
   }
+}
 
-  @override
-  bool operator ==(covariant Todo other) {
-    if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.content == content &&
-      other.isCompleted == isCompleted &&
-      other.createdAt == createdAt;
-  }
 
-  @override
-  int get hashCode {
-    return id.hashCode ^
-      content.hashCode ^
-      isCompleted.hashCode ^
-      createdAt.hashCode;
-  }
+
+abstract class TodoList {}
+
+class TodoListContent implements TodoList {
+  TodoListContent(this.data);
+  final List<Todo> data;
+}
+
+class Error implements TodoList {
+  Error(this.message);
+  final String message;
+}
+
+class Loading implements TodoList {
+  const Loading();
 }

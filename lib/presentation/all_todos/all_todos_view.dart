@@ -27,54 +27,57 @@ class _AllTodosViewState extends State<AllTodosView> {
   Widget build(BuildContext context) {
     AuthViewModel _authViewModel = provider.Provider.of<AuthViewModel>(context);
 
-    return provider.StreamProvider<List<Todo>?>(
-      create: (context) => _todosService.getAllTodos(),
-      initialData: null,
-      catchError: (context, error) {
-        return [
-          Todo(
-              id: "0",
-              content: "content",
-              isCompleted: false,
-              createdAt: "createdAt")
-        ];
-      },
-      child: provider.ChangeNotifierProvider(
-        create: (context) => TodoViewModel(),
-        child: provider.Consumer<TodoViewModel>(
-          builder: (context,todovm,child) {
-            return Scaffold(
-              appBar: AppBar(
-                // title: Text('My Todos'),
-                title: DropdownButton(
-                      value: todovm.isCompletedViewMode?1:2,
-                      underline: Container(),
-                      borderRadius: BorderRadius.circular(10),
-                      items: [
-                        DropdownMenuItem(child: Text('Completed'),value: 1),
-                        DropdownMenuItem(child: Text('Remaining'),value: 2,),
-                      ],
-                      onChanged: (val) {
-                        todovm.setisCompletedViewMode= val==1?true:false;
-                      },
-                    ),
-                actions: [
-                  IconButton(
-                    onPressed: () => _authViewModel.logout(context: context),
-                    icon: Icon(Icons.logout_rounded),
-                  )
-                ],
-              ),
-              body: TodosList(),
-              floatingActionButton: FloatingActionButton.extended(
-                onPressed: () => Navigator.pushNamed(context, '/create'),
-                icon: Icon(Icons.add),
-                label: Text("Add"),
-              ),
-            );
-          }
-        ),
-      ),
-    );
+    return provider.StreamProvider<TodoList>(
+        // value: TodoListContent(_todosService.getAllTodos()).data,
+        create: (context) {
+          final todosStream = _todosService.getAllTodos();
+          final todosList = todosStream.map((todos){
+            return TodoListContent(todos);
+          });
+          return todosList;
+          // yield TodoListContent(todosStream.map((todos) => todos));
+        },
+        initialData: Loading(),
+        catchError: (_, error) => Error(error.toString()),
+        builder: (context, child) {
+          return provider.ChangeNotifierProvider(
+            create: (context) => TodoViewModel(),
+            child: provider.Consumer<TodoViewModel>(
+                builder: (context, todovm, child) {
+              return Scaffold(
+                appBar: AppBar(
+                  // title: Text('My Todos'),
+                  title: DropdownButton(
+                    value: todovm.isCompletedViewMode ? 1 : 2,
+                    underline: Container(),
+                    borderRadius: BorderRadius.circular(10),
+                    items: [
+                      DropdownMenuItem(child: Text('Completed'), value: 1),
+                      DropdownMenuItem(
+                        child: Text('Remaining'),
+                        value: 2,
+                      ),
+                    ],
+                    onChanged: (val) {
+                      todovm.setisCompletedViewMode = val == 1 ? true : false;
+                    },
+                  ),
+                  actions: [
+                    IconButton(
+                      onPressed: () => _authViewModel.logout(context: context),
+                      icon: Icon(Icons.logout_rounded),
+                    )
+                  ],
+                ),
+                body: TodosList(),
+                floatingActionButton: FloatingActionButton.extended(
+                  onPressed: () => Navigator.pushNamed(context, '/create'),
+                  icon: Icon(Icons.add),
+                  label: Text("Add"),
+                ),
+              );
+            }),
+          );
+        });
   }
 }

@@ -33,17 +33,14 @@ class TodosService {
         .insert({'content': content, 'isCompleted': false, 'userId': userId});
   }
 
-  Future updateTodo() async {}
+  Future updateTodo({required String id}) async {}
 
-  Future checkTodo({required String id,required bool? value}) async {
+  Future checkTodo({required String id, required bool? value}) async {
     try {
-          await supabase
-        .from('todos')
-        .update({'isCompleted': value}).eq('id', id);
+      await supabase.from('todos').update({'isCompleted': value}).eq('id', id);
     } catch (e) {
       print(e);
     }
-
   }
 
   Future deleteTodo({required String id}) async {
