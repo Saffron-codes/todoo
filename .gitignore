@@ -85,6 +85,7 @@ migrate_working_dir/
 **/macos/
 **/windows/
 **/web/
+*.env
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
