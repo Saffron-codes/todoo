@@ -27,6 +27,7 @@ class DialogService {
   }
 
   void closeDialog({required BuildContext context}) {
-    Navigator.pop(context);
+    // Navigator.pop(context);
+    Navigator.of(context, rootNavigator: true).pop();
   }
 }

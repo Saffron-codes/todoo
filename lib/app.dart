@@ -1,17 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:todolist_supabase/core/viewmodels/auth_viewmodel.dart';
-import './presentation/app_views.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todolist_supabase/injection_container.dart';
+import 'package:todolist_supabase/presentation/bloc/auth_bloc/auth_bloc.dart';
+import 'package:todolist_supabase/presentation/bloc/login_bloc/login_bloc.dart';
+import 'package:todolist_supabase/presentation/bloc/signup_bloc/signup_bloc.dart';
+import 'domain/usecases/auth/logout_user.dart';
+import 'presentation/pages/app_views.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => AuthViewModel(),
-        )
+        BlocProvider<LoginBloc>(
+          create: (context) => sl<LoginBloc>(),
+        ),
+        BlocProvider<SignupBloc>(
+          create: (context) => sl<SignupBloc>(),
+        ),
+        BlocProvider<AuthBloc>(
+          create: (context) => AuthBloc(
+            logoutUser: sl<LogoutUser>(),
+            loginBloc: BlocProvider.of<LoginBloc>(context),
+            signupBloc: BlocProvider.of<SignupBloc>(context)
+          )..add(
+              AppStarted(),
+            ),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -19,29 +35,13 @@ class App extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.light(
-            // onBackground: Colors.black,
-            // surfaceTint: Colors.amber,
             primary: Colors.purple.shade900,
-
-            // secondary: Color.fromARGB(255, 103, 0, 248),
-            // primary: Color.fromARGB(255, 25, 1, 1)
           ),
         ),
         themeMode: ThemeMode.system,
-        darkTheme: ThemeData(useMaterial3: true,colorScheme: ColorScheme.fromSwatch(brightness: Brightness.dark)),
-        // darkTheme: ThemeData(
-        //   useMaterial3: true,
-        //   colorScheme: ColorScheme.dark(
-        //     primary: Colors.purple.shade200,
-        //   ),
-        //   appBarTheme: AppBarTheme(
-        //     backgroundColor: Colors.black26,
-        //   ),
-        //   floatingActionButtonTheme: FloatingActionButtonThemeData(
-        //     backgroundColor: Colors.purple.shade200
-        //   ),
-          
-        // ),
+        darkTheme: ThemeData(
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSwatch(brightness: Brightness.dark)),
         initialRoute: '/',
         routes: {
           '/': (context) => DeceiderView(),
