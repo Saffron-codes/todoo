@@ -14,5 +14,9 @@ class TodoLoaded extends TodoState {
   @override
   List<Object> get props => [todos];
 }
-class TodoFailure extends TodoState {}
+class TodoFailed extends TodoState {}
 class TodoEmpty extends TodoState {}
+
+// class TodoDeleteSuccess extends TodoState {}
+// class TodoDeleteFailed extends TodoState {}
+// class TodoDeleteLoading extends TodoState {}

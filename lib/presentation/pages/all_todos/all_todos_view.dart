@@ -86,6 +86,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todolist_supabase/injection_container.dart';
 import 'package:todolist_supabase/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:todolist_supabase/presentation/pages/all_todos/widgets/todo_card_view.dart';
+import 'package:todolist_supabase/presentation/pages/all_todos/widgets/todo_tile.dart';
 import 'package:todolist_supabase/presentation/pages/all_todos/widgets/welcome_container.dart';
 
 import '../../../core/services/dialog_service.dart';
@@ -102,24 +103,10 @@ class AllTodosView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<TodoBloc>(),
+      create: (context) => sl<TodoBloc>()..add(GetTodos()),
       child: Scaffold(
         appBar: AppBar(
-          title: DropdownButton(
-            value: 1,
-            underline: Container(),
-            borderRadius: BorderRadius.circular(10),
-            items: [
-              DropdownMenuItem(child: Text('Completed'), value: 1),
-              DropdownMenuItem(
-                child: Text('Remaining'),
-                value: 2,
-              ),
-            ],
-            onChanged: (val) {
-              //todovm.setisCompletedViewMode = val == 1 ? true : false;
-            },
-          ),
+          title: Text("My Todos"),
           actions: [
             IconButton(
               onPressed: () =>
@@ -130,26 +117,31 @@ class AllTodosView extends StatelessWidget {
         ),
         body: BlocConsumer<TodoBloc, TodoState>(
           listener: (context, state) {
-            if (state is TodoFailure) {
+            if (state is TodoFailed) {
               toastService.errorToast(
                   message: "There was an error retriewing your todos");
             } else if (state is TodoEmpty) {
               toastService.successToast(message: "Start creating a new todo");
             }
+            
           },
           builder: (context, state) {
+            
             if (state is TodoLoading) {
               return Center(
                 child: CircularProgressIndicator(),
               );
             } else if (state is TodoLoaded) {
               return ListView.builder(
-                itemBuilder: (_, i) => TodoCard(todo: state.todos[i]),
+                itemBuilder: (_, i) => ToDoTile(todo: state.todos[i]),
                 itemCount: state.todos.length,
               );
             } else if (state is TodoEmpty) {
               return WelcomeContainer();
-            } else {
+            } else if(state is TodoFailed){
+              return Center(child: Text("There was an error retriewing your todos"));
+            }
+             else {
               return Text("Unknown state");
             }
           },

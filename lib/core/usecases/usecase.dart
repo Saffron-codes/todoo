@@ -8,7 +8,7 @@ abstract class UseCase<Type, Params> {
 }
 
 abstract class StreamUseCase<Type, Params> {
-  Stream<Either<Failure, Type>> call(Params params);
+  Type call(Params params);
 }
 
 

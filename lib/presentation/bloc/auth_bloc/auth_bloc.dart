@@ -53,4 +53,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       
     });
   }
+  @override
+  Future<void> close() {
+    signupSubscription.cancel();
+    loginSubscription.cancel();
+    return super.close();
+  }
 }

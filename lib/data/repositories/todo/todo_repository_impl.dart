@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:todolist_supabase/core/error/exceptions.dart';
 import 'package:todolist_supabase/core/error/failures.dart';
 import 'package:todolist_supabase/data/data_sources/todo/todo_data_source.dart';
 import 'package:todolist_supabase/domain/entities/todo/todo.dart';
@@ -10,41 +11,45 @@ class TodosRepositoryImpl implements TodoRepository {
   final TodoRemoteDataSource todoRemoteDataSource;
 
   TodosRepositoryImpl({required this.todoRemoteDataSource});
-  
+
   @override
-  Future<Either<TodoFailure, Todo>> checkTodo({required String id, required bool value}) {
+  Future<Either<TodoFailure, Todo>> checkTodo(
+      {required String id, required bool value}) {
     // TODO: implement checkTodo
     throw UnimplementedError();
   }
-  
+
   @override
-  Future<Either<TodoFailure, Todo>> deleteTodo({required String id}) {
-    // TODO: implement deleteTodo
-    throw UnimplementedError();
+  Future<Either<TodoFailure, Todo>> deleteTodo({required String id})async {
+    try {
+      final deletedTodo = await todoRemoteDataSource.deleteTodo(id);
+      return Right(deletedTodo);
+    } on DatabaseException {
+      return Left(TodoFailure());
+    }
   }
-  
+
   @override
-  Stream<Either<TodoFailure, List<Todo>>> getAllTodos()async* {
-    yield* todoRemoteDataSource.getAllTodos().map((event) => right<TodoFailure,List<Todo>>(
-      event.toList()
-    )).handleError((obj){
-      throw TodoFailure();
-    });
+  Stream<List<Todo>> getAllTodos() {
+    return todoRemoteDataSource.getAllTodos();
   }
-  
+
   @override
-  Future<Either<TodoFailure, Todo>> insertTodo({required String content}) {
-    // TODO: implement insertTodo
-    throw UnimplementedError();
+  Future<Either<TodoFailure, Todo>> insertTodo(
+      {required String content}) async {
+    try {
+      final todo = await todoRemoteDataSource.insertTodo(content);
+      return Right(todo);
+    } on TodoFailure {
+      return Left(TodoFailure());
+    }
   }
-  
+
   @override
   Future<Either<TodoFailure, Todo>> updateTodo({required String id}) {
     // TODO: implement updateTodo
     throw UnimplementedError();
   }
-
-
 }
 
 

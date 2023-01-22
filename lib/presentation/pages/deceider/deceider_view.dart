@@ -5,37 +5,43 @@ import 'package:todolist_supabase/presentation/pages/app_views.dart';
 import '../../../core/services/dialog_service.dart';
 import '../../../core/services/toast_service.dart';
 import '../../bloc/auth_bloc/auth_bloc.dart';
+import '../../bloc/internet_bloc/internet_bloc.dart';
 
 class DeceiderView extends StatelessWidget {
-    final dialogService = DialogService();
+  final dialogService = DialogService();
   final toastService = ToastService();
-   DeceiderView({super.key});
-  
+  DeceiderView({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthBloc, AuthState>(
+    return BlocListener<InternetBloc, InternetState>(
       listener: (context, state) {
-        if(state is Loading){
-          dialogService.showLoadingDialog(context: context);
-        }else if(state is DismissDialog){
-          dialogService.closeDialog(context: context);
-        }else if(state is AuthError){
-          toastService.errorToast(message: state.message);
+        if (state is InternetDisconnected) {
+          toastService.errorToast(message: "Check your Internet Connection");
         }
       },
-      builder: (context, state) {
-        if(state is Uninitialized){
-          return Scaffold();
-        }
-        else if(state is Authenticated){
-          return AllTodosView();
-        }else if(state is Unauthenticated){
-          return LoginView();
-        }
-        else {
-          return Scaffold();
-        }
-      },
+      child: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is Loading) {
+            dialogService.showLoadingDialog(context: context);
+          } else if (state is DismissDialog) {
+            dialogService.closeDialog(context: context);
+          } else if (state is AuthError) {
+            toastService.errorToast(message: state.message);
+          }
+        },
+        builder: (context, state) {
+          if (state is Uninitialized) {
+            return Scaffold();
+          } else if (state is Authenticated) {
+            return AllTodosView();
+          } else if (state is Unauthenticated) {
+            return LoginView();
+          } else {
+            return Scaffold();
+          }
+        },
+      ),
     );
   }
 }

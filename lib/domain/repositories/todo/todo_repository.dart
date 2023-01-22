@@ -3,7 +3,7 @@ import 'package:todolist_supabase/core/error/failures.dart';
 import 'package:todolist_supabase/domain/entities/todo/todo.dart';
 
 abstract class TodoRepository {
-  Stream<Either<TodoFailure,List<Todo>>> getAllTodos();
+  Stream<List<Todo>> getAllTodos();
 
   Future<Either<TodoFailure,Todo>> insertTodo({required String content});
 

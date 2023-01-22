@@ -1,6 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'dart:convert';
+
+import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:todolist_supabase/core/error/exceptions.dart';
+import 'package:todolist_supabase/core/error/failures.dart';
 
 import 'package:todolist_supabase/data/models/todo/todo_model.dart';
 
@@ -24,15 +29,22 @@ class TodoRemoteDataSourceImpl implements TodoRemoteDataSource {
   }
 
   @override
-  Future<TodoModel> deleteTodo(String id) {
-    // TODO: implement deleteTodo
-    throw UnimplementedError();
+  Future<TodoModel> deleteTodo(String id) async {
+    final List<dynamic> data = await client
+        .from('todos')
+        .delete()
+        .match({'id': id})
+        .select()
+        .onError((error, stackTrace) {
+          throw DatabaseException();
+        });
+    return TodoModel.fromMap(data[0]);
   }
 
   @override
-  Stream<List<TodoModel>> getAllTodos() async* {
+  Stream<List<TodoModel>> getAllTodos() {
     final userId = client.auth.currentUser!.id;
-    yield* client
+    return client
         .from('todos')
         .stream(primaryKey: ['id'])
         .eq('userId', userId)
@@ -47,13 +59,27 @@ class TodoRemoteDataSourceImpl implements TodoRemoteDataSource {
               },
             ).toList();
           },
-        );
+        )
+        .handleError((obj) {
+          // print("Todo Error");
+          throw TodoFailure();
+        });
   }
 
   @override
-  Future<TodoModel> insertTodo(String content) {
-    // TODO: implement insertTodo
-    throw UnimplementedError();
+  Future<TodoModel> insertTodo(String content) async {
+    final List<dynamic> todoMap = await client
+        .from('todos')
+        .insert({
+          'content': content,
+          'isCompleted': false,
+          'userId': client.auth.currentUser!.id
+        })
+        .select()
+        .onError((error, stackTrace) {
+          throw TodoFailure();
+        });
+    return TodoModel.fromMap(todoMap[0]);
   }
 
   @override

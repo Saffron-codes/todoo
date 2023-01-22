@@ -5,19 +5,19 @@ import 'package:todolist_supabase/core/usecases/usecase.dart';
 import 'package:todolist_supabase/domain/entities/todo/todo.dart';
 import 'package:todolist_supabase/domain/repositories/todo/todo_repository.dart';
 
-
-
 /// This usecase implements the get all todos for current user
-/// 
+///
 /// has a stream of either [Failure] or [List<Todo>]
 
-class GetAllTodos implements StreamUseCase<List<Todo>, NoParams> {
+class GetAllTodos implements StreamUseCase<Stream<List<Todo>>, NoParams> {
   final TodoRepository todorepository;
 
   GetAllTodos({required this.todorepository});
-
+  
   @override
-  Stream<Either<Failure, List<Todo>>> call(NoParams params) {
-    return todorepository.getAllTodos();
+  Stream<List<Todo>> call(NoParams params) {
+   return todorepository.getAllTodos();
   }
+
+ 
 }

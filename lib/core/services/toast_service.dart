@@ -20,4 +20,13 @@ class ToastService {
       backgroundColor: Colors.redAccent,
     );
   }
+
+    void infoToast({required String message}) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.SNACKBAR,
+      backgroundColor: Colors.blueAccent,
+    );
+  }
 }
