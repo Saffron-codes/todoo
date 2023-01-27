@@ -11,6 +11,7 @@ import 'package:todolist_supabase/data/repositories/todo/todo_repository_impl.da
 import 'package:todolist_supabase/domain/repositories/auth/auth_repository.dart';
 import 'package:todolist_supabase/domain/repositories/todo/todo_repository.dart';
 import 'package:todolist_supabase/domain/usecases/auth/login_user.dart';
+import 'package:todolist_supabase/domain/usecases/todo/check_todo.dart';
 import 'package:todolist_supabase/domain/usecases/todo/delete_todo.dart';
 import 'package:todolist_supabase/domain/usecases/todo/get_all_todo.dart';
 import 'package:todolist_supabase/presentation/bloc/auth_bloc/auth_bloc.dart';
@@ -37,7 +38,7 @@ Future<void> init() async {
   sl.registerFactory(() => TodoBloc(getAllTodos: sl()));
   sl.registerFactory(() => InternetBloc(connectivity: sl()));
   sl.registerFactory(() => TodoFormBloc(createTodo: sl()));
-  sl.registerFactory(() => TodoCrudBloc(deleteTodo: sl()));
+  sl.registerFactory(() => TodoCrudBloc(deleteTodo: sl(), checkTodo: sl()));
 
   // Usecases 
   sl.registerLazySingleton(() => SignupUser(authRepository: sl()));
@@ -46,6 +47,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetAllTodos(todorepository: sl()));
   sl.registerLazySingleton(() => CreateTodo(todorepository: sl()));
   sl.registerLazySingleton(() => DeleteTodo(todoRepository: sl()));
+  sl.registerLazySingleton(() => CheckTodo(todorepository: sl()));
 
   // Repositories
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(authDataSource: sl()));

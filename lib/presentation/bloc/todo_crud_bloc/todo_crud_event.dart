@@ -14,5 +14,11 @@ class DeleteTodoEvent extends TodoCrudEvent{
 }
 
 
-class UpdateTodoEvent extends TodoCrudEvent{}
-class ResetState extends TodoCrudEvent{}
+// class UpdateTodoEvent extends TodoCrudEvent{}
+
+
+class CheckTodoEvent extends TodoCrudEvent{
+  final String id;
+  final bool value;
+  const CheckTodoEvent(this.id,this.value);
+}

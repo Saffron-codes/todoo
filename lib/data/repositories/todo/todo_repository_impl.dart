@@ -14,9 +14,13 @@ class TodosRepositoryImpl implements TodoRepository {
 
   @override
   Future<Either<TodoFailure, Todo>> checkTodo(
-      {required String id, required bool value}) {
-    // TODO: implement checkTodo
-    throw UnimplementedError();
+      {required String id, required bool value})async {
+    try {
+      final checkedTodo = await todoRemoteDataSource.checkTodo(id, value);
+      return Right(checkedTodo);
+    } on DatabaseException {
+      return Left(TodoFailure());
+    }
   }
 
   @override

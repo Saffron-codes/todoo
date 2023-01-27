@@ -120,8 +120,6 @@ class AllTodosView extends StatelessWidget {
             if (state is TodoFailed) {
               toastService.errorToast(
                   message: "There was an error retriewing your todos");
-            } else if (state is TodoEmpty) {
-              toastService.successToast(message: "Start creating a new todo");
             }
             
           },

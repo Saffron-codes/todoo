@@ -19,3 +19,10 @@ class TodoUpdateLoading extends TodoCrudState {}
 class TodoUpdateSuccess extends TodoCrudState {}
 class TodoUpdateFailed extends TodoCrudState {}
 
+
+class TodoCheckLoading extends TodoCrudState {
+  final bool value;
+  const TodoCheckLoading(this.value);
+}
+class TodoCheckSuccess extends TodoCrudState {}
+class TodoCheckFailed extends TodoCrudState {}
