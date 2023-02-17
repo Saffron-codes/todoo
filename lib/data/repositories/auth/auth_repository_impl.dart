@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:todolist_supabase/core/error/exceptions.dart';
 import 'package:todolist_supabase/core/error/failures.dart';
 import 'package:todolist_supabase/data/data_sources/auth/auth_data_source.dart';
 import 'package:todolist_supabase/domain/repositories/auth/auth_repository.dart';
@@ -15,8 +16,8 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(
         await authDataSource.login(email, password),
       );
-    } on AuthFailure {
-      return Left(AuthFailure());
+    } on AuthException catch(e){
+      return Left(AuthFailure(message: e.message));
     }
   }
 
@@ -26,8 +27,8 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(
         await authDataSource.logout(),
       );
-    } on AuthFailure {
-      return Left(AuthFailure());
+    } on AuthException catch(e) {
+      return Left(AuthFailure(message: e.toString()));
     }
   }
 
@@ -38,8 +39,8 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(
         await authDataSource.signup(email, username, password),
       );
-    } on AuthFailure {
-      return Left(AuthFailure());
+    } on AuthException catch(e) {
+      return Left(AuthFailure(message: e.message));
     }
   }
 }

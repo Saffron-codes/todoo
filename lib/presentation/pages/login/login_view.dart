@@ -37,9 +37,10 @@ class LoginView extends StatelessWidget {
         ),
         body: BlocListener<LoginBloc, LoginState>(
             listener: (context, state) {
+              // print(state);
               if (state is LoginFailure) {
                 dialogService.closeDialog(context: context);
-                toastService.errorToast(message: "Login Error");
+                toastService.errorToast(message: state.message);
               } else if (state is LoginSuccess) {
                 dialogService.closeDialog(context: context);
                 toastService.successToast(message: "Login was Success");

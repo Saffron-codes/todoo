@@ -16,7 +16,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           LoginParams(email: event.email, password: event.password);
       final failureOrUser = await login(loginParams);
       final result = failureOrUser.fold(
-        (failure) => LoginFailure(message: "Some Error Occured"),
+        (failure) => LoginFailure(message: failure.message),
         (user) => LoginSuccess(),
       );
       emit(result);

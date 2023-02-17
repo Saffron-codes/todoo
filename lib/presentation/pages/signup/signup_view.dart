@@ -21,7 +21,7 @@ class _SignupViewState extends State<SignupView> {
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _usernameController = TextEditingController();
   final _loginFormKey = GlobalKey<FormState>();
-    final dialogService = DialogService();
+  final dialogService = DialogService();
   final toastService = ToastService();
 
   void signup() {
@@ -47,7 +47,7 @@ class _SignupViewState extends State<SignupView> {
         listener: (context, state) {
           if (state is SignupFailure) {
             dialogService.closeDialog(context: context);
-            toastService.errorToast(message: "Signup Error");
+            toastService.errorToast(message: state.message);
           } else if (state is SignupSuccess) {
             dialogService.closeDialog(context: context);
             dialogService.closeDialog(context: context);
@@ -67,9 +67,9 @@ class _SignupViewState extends State<SignupView> {
                   flex: 1,
                 ),
                 Center(child: Text("Welcome to Svik Todo!")),
-                SizedBox(
-                  height: 60,
-                ),
+                // SizedBox(
+                //   height: 60,
+                // ),
                 TextFormField(
                   controller: _usernameController,
                   decoration: InputDecoration(hintText: 'Name'),
@@ -101,8 +101,8 @@ class _SignupViewState extends State<SignupView> {
                     }
                   },
                 ),
-                Spacer(
-                  flex: 1,
+                SizedBox(
+                  height: 20,
                 ),
                 TextButton(
                   onPressed: () => Navigator.pushNamed(context, '/login'),
@@ -114,9 +114,12 @@ class _SignupViewState extends State<SignupView> {
                   style: ElevatedButton.styleFrom(
                       minimumSize: Size(MediaQuery.of(context).size.width, 52)),
                 ),
-                Spacer(
-                  flex: 1,
-                ),
+                // (MediaQuery.of(context).size.height * 10) / 100 > 70
+                //     ? Spacer(
+                //         flex: 1,
+                //       )
+                //     : Container(),
+                Spacer(flex: 2,)
               ],
             ),
           ),

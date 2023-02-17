@@ -25,17 +25,15 @@ class CreateTodoPage extends StatelessWidget {
           dialogService.showLoadingDialog(context: context);
         }else if(state is TodoFormLoaded){
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Added Successfully'))
+            SnackBar(content: Text('Added Successfully'),duration: Duration(milliseconds: 500),)
           );
-          // toastService.successToast(message: "Added Todo");
           dialogService.closeDialog(context: context);
           Navigator.pop(context);
         }else {
           dialogService.closeDialog(context: context);
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Some error occurred'))
+            SnackBar(content: Text('Some error occurred'),backgroundColor: Colors.redAccent,)
           );
-          // toastService.errorToast(message: "Some error occurred");
         }
       },
       child: Scaffold(

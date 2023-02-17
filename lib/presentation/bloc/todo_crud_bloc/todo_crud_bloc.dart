@@ -11,6 +11,8 @@ class TodoCrudBloc extends Bloc<TodoCrudEvent, TodoCrudState> {
   final CheckTodo checkTodo;
 
   TodoCrudBloc({required this.deleteTodo,required this.checkTodo}) : super(TodoCrudInitial()) {
+
+
     on<DeleteTodoEvent>((event, emit) async {
       emit(TodoDeleteLoading());
       DeleteTodoParams deleteTodoParams = DeleteTodoParams(event.id);

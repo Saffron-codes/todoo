@@ -11,40 +11,51 @@ class ToDoTile extends StatelessWidget {
 
   ToDoTile({super.key, required this.todo});
 
-
   final ToastService toastService = ToastService();
 
-  
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TodoCrudBloc, TodoCrudState>(
       listener: (context, state) {
-        // print(state);
-        if (state is TodoDeleteLoading) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Deleting...'))
-          );
+        print(state);
+        if (state is TodoDeleteLoading || state is TodoCheckLoading) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Loading...')));
         } else if (state is TodoDeleteSuccess) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Successfully Deleted'))
-          );
-        } else if (state is TodoDeleteFailed || state is TodoCheckFailed) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Successfully Deleted'),
+            duration: Duration(milliseconds: 500),
+          ));
+        } else if (state is TodoCheckSuccess) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Some error Occurred'))
-          );
-        } else if(state is TodoCheckLoading){
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: state.value?Text('Checking...'):Text('UnChecking....'))
-          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Updated'),
+            duration: Duration(milliseconds: 500),
+          ));
+        } else {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Some error Occurred...'),
+            backgroundColor: Colors.redAccent,
+          ));
         }
-        else if (state is TodoCheckSuccess) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Checked'))
-          );
-        } 
+        //else if (state is TodoDeleteFailed || state is TodoCheckFailed) {
+        //   // ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: Text('Some error Occurred'),backgroundColor: Colors.redAccent,)
+        //   );
+        // } else if(state is TodoCheckLoading){
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: state.value?Text('Checking...'):Text('UnChecking....'))
+        //   );
+        // }
+        // else if (state is TodoCheckSuccess) {
+        //   // ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(content: Text('Done'),duration: Duration(milliseconds: 500),)
+        //   );
+        // }
       },
       builder: (context, state) {
         return Padding(
@@ -90,7 +101,8 @@ class ToDoTile extends StatelessWidget {
                   Checkbox(
                     value: todo.isCompleted,
                     onChanged: (val) {
-                      BlocProvider.of<TodoCrudBloc>(context).add(CheckTodoEvent(todo.id, val??false));
+                      BlocProvider.of<TodoCrudBloc>(context)
+                          .add(CheckTodoEvent(todo.id, val ?? false));
                     },
                     activeColor: Colors.black,
                   ),
